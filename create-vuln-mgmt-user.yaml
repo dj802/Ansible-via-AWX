@@ -27,9 +27,5 @@
 
   # This will load a state from a file, with a rollback in case of access loss
   - name: restore firewall state from a file
-    community.general.iptables_state:
-      state: restored
-      path: /etc/firewall.conf
+    command: iptables-restore /etc/firewall.conf
     when: file_check.stat.exists
-    async: "{{ ansible_timeout }}"
-    poll: 0
