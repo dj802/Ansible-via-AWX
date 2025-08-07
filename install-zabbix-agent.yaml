@@ -1,0 +1,87 @@
+
+---
+- hosts: all
+  become: true
+  tasks: 
+    - name: Check OS version
+      ansible.builtin.debug:
+        msg: 'The OS version is {{ ansible_distribution }} {{ ansible_distribution_version }}'
+
+    - name: Download Zabbix Agent Deb Package for Debian 12 (Bookworm)
+      ansible.builtin.get_url:
+        url:  https://repo.zabbix.com/zabbix/7.0/debian/pool/main/z/zabbix-release/zabbix-release_latest+debian12_all.deb
+        dest: /root/zabbix-release_latest+debian12_all.deb
+        mode: '0440'
+      when: ansible_distribution == 'Debian' and ansible_distribution_major_version == '12'
+
+    - name: Install Zabbix package for Debian 12 (Bookworm)
+      ansible.builtin.apt:
+        deb: /root/zabbix-release_latest+debian12_all.deb
+      when: ansible_distribution == 'Debian' and ansible_distribution_major_version == '12'
+
+    - name: Download Zabbix Agent Deb Package for Debian 11 (Bullseye)
+      ansible.builtin.get_url:
+        url:  https://repo.zabbix.com/zabbix/7.0/debian/pool/main/z/zabbix-release/zabbix-release_latest+debian11_all.deb
+        dest: /root/zabbix-release_latest+debian11_all.deb
+        mode: '0440'
+      when: ansible_distribution == 'Debian' and ansible_distribution_major_version == '11'
+
+    - name: Install Zabbix package for Debian 11 (Bullseye)
+      ansible.builtin.apt:
+        deb: /root/zabbix-release_latest+debian11_all.deb
+      when: ansible_distribution == 'Debian' and ansible_distribution_major_version == '11'
+
+    - name: Download Zabbix Agent Deb Package for Debian 10 (Buster)
+      ansible.builtin.get_url:
+        url:  https://repo.zabbix.com/zabbix/7.0/debian/pool/main/z/zabbix-release/zabbix-release_latest+debian10_all.deb
+        dest: /root/zabbix-release_latest+debian10_all.deb
+        mode: '0440'
+      when: ansible_distribution == 'Debian' and ansible_distribution_major_version == '10'
+
+    - name: Install Zabbix package for Debian 10 (Buster)
+      ansible.builtin.apt:
+        deb: /root/zabbix-release_latest+debian10_all.deb
+      when: ansible_distribution == 'Debian' and ansible_distribution_major_version == '10'
+
+    - name: Install Zabbix Agent
+      ansible.builtin.apt:
+        name: 
+          - zabbix-agent2
+        state: present
+        update_cache: yes
+
+    - name: Install Zabbix Agent Plugins
+      ansible.builtin.apt:
+        name:
+          - zabbix-agent2-plugin-*
+        state: present
+        update_cache: yes
+
+    - name: Modify Zabbix Agent Config
+      ansible.builtin.replace:
+        path: /etc/zabbix/zabbix_agent2.conf
+        regexp: ^Server=.*$
+        replace: Server={{ zabbix_proxy }}
+
+    - name: Modify Zabbix Agent Config
+      ansible.builtin.replace:
+        path: /etc/zabbix/zabbix_agent2.conf
+        regexp: ^ServerActive=.*$
+        replace: ServerActive={{ zabbix_proxy }}
+
+    - name: Modify Zabbix Agent Config
+      ansible.builtin.replace:
+        path: /etc/zabbix/zabbix_agent2.conf
+        regexp: ^Hostname=.*$
+        replace: Hostname={{ ansible_hostname }}
+
+    - name: Modify Zabbix Agent Config
+      ansible.builtin.replace:
+        path: /etc/zabbix/zabbix_agent2.conf
+        regexp: ^# Timeout=3*$
+        replace: Timeout=10
+
+    - name: Zabbix Agent Restart
+      systemd:
+        name: zabbix-agent2
+        state: restarted

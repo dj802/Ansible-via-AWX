@@ -1,0 +1,17 @@
+- name: Update and uprade packages
+  import_playbook: update-packages.yaml
+
+- name: Install required pacakages
+  import_playbook: host-config.yml
+
+- name: Create Users
+  import_playbook: create-users.yaml
+
+- name: Install Zabbix Agent
+  import_playbook: install-zabbix-agent.yaml
+
+- name: Configure Vulnerability Management User
+  import_playbook: create-vuln-mgmt-user.yaml
+
+- name: Disable ICMP Redirect
+  import_playbook: disable-icmp-redirect.yaml

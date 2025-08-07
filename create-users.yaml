@@ -1,0 +1,16 @@
+---
+- hosts: all 
+  become: true
+  tasks:
+  - name: Create users
+    ansible.builtin.user:
+      name: "{{ item }}"
+      groups: sudo
+      create_home: yes
+      shell: /bin/bash
+      password: "{{ password | password_hash('sha512') }}"
+    loop:
+      - "{{ user_1 }}"
+      - "{{ user_2 }}"
+      - "{{ user_3 }}"
+      - "{{ user_4 }}"

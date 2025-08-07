@@ -1,0 +1,23 @@
+---
+- hosts: all
+  become: true
+  tasks:
+  - name: Install Packages
+    package:
+      name:
+        - byobu 
+        - liblz4-tool 
+        - sudo 
+        - iptables 
+        - ifenslave 
+        - nfs-client 
+        - dirmngr 
+        - logrotate 
+        - xfsprogs 
+        - numactl 
+        - nload 
+        - rsync 
+        - gnupg 
+        - curl 
+        - unzip
+        - parted

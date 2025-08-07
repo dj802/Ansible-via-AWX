@@ -1,0 +1,35 @@
+---
+- hosts: all 
+  become: true
+  tasks:
+  - name: Create users
+    ansible.builtin.user:
+      name: "{{ user }}"
+      groups: sudo
+      create_home: yes 
+      shell: /bin/bash
+      password: "{{ password | password_hash('sha512') }}"
+
+  - name: Check if /etc/firewall.conf exists
+    stat:
+      path: /etc/firewall.conf
+    register: file_check
+
+  - name: Modify Iptables Config
+    ansible.builtin.blockinfile:
+      path: /etc/firewall.conf
+      insertbefore: "COMMIT"
+      block: |
+        # Rapid 7 Vulnerability Scanner
+        -A INPUT -s {{ vuln_scan_ip }} -j ACCEPT
+        -A INPUT -s {{ vuln_console_ip }} -j ACCEPT
+    when: file_check.stat.exists
+
+  # This will load a state from a file, with a rollback in case of access loss
+  - name: restore firewall state from a file
+    community.general.iptables_state:
+      state: restored
+      path: /etc/firewall.conf
+    when: file_check.stat.exists
+    async: "{{ ansible_timeout }}"
+    poll: 0
