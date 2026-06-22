@@ -23,6 +23,7 @@
       api_host: "{{ api_host }}"
       api_token_id: "{{ api_token_id }}"
       api_token_secret: "{{ api_token_secret }}"
+      validate_certs: false
     register: proxmox_inventory
 
   - name: Display Proxmox inventory list
