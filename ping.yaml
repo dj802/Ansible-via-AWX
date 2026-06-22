@@ -1,0 +1,7 @@
+---
+- name: Test Infrastructure Connectivity
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Ping all managed hosts
+      ansible.builtin.ping:
