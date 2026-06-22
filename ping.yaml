@@ -2,6 +2,12 @@
 - name: Test Infrastructure Connectivity
   hosts: all
   gather_facts: false
+  module_defaults:
+    group/community.general.proxmox:
+      api_host: "{{ proxmox_api_host }}"
+      api_user: "{{ proxmox_api_user }}"
+      api_token_id: "{{ proxmox_api_token_id }}"
+      api_token_secret: "{{ proxmox_api_token_secret }}"
   tasks:
     - name: Ping all managed hosts
       ansible.builtin.ping:
