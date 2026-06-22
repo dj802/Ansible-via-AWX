@@ -8,7 +8,7 @@
     api_token_secret: "{{ proxmox_token_secret }}"
   tasks:
   - name: Get VM inventory
-    community.proxmox.proxmox_vm_info:
+    group/community.proxmox.proxmox_vm_info:
       api_user: "{{ api_user }}"
       api_host: "{{ api_host }}"
       api_token_id: "{{ api_token_id }}"
