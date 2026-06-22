@@ -14,4 +14,4 @@
   import_playbook: create-vuln-mgmt-user.yaml
 
 - name: Disable ICMP Redirect
-  import_playbook: disable-icmp-redirect.yaml
+  import_playbook: disable-icmp-redirect.yaml 
