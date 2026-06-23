@@ -2,7 +2,7 @@
   hosts: localhost
   gather_facts: false
   vars:
-    api_host: "{{ proxmox_host }}"
+    api_host: "{{ ansible_host }}"
     api_user: "{{ proxmox_user }}"
     api_token_id: "{{ proxmox_token_id }}"
     api_token_secret: "{{ proxmox_token_secret }}"
