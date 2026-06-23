@@ -22,6 +22,10 @@
     debug:
       var: ansible_version.full
 
+  - name: Dump all current variables
+    debug:
+      var: vars
+
   - name: Get VM inventory
     community.proxmox.proxmox_vm_info:
       api_user: "{{ api_user }}"
