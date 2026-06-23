@@ -12,6 +12,7 @@
         name: 
          - proxmoxer
          - requests
+         - ansible
         extra_args: --user
       delegate_to: localhost
       run_once: true
@@ -20,7 +21,7 @@
   - name: Print version
     debug:
       var: ansible_version.full
-      
+
   - name: Get VM inventory
     community.proxmox.proxmox_vm_info:
       api_user: "{{ api_user }}"
