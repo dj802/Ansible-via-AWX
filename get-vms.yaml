@@ -1,5 +1,6 @@
 - name: Query VMs on Proxmox VE
-  hosts: localhost
+  hosts: hosts
+  connection: local
   gather_facts: false
   vars:
     api_host: "{{ proxmox_host }}"
