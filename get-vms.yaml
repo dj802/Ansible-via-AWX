@@ -17,16 +17,8 @@
         extra_args: --user
       delegate_to: localhost
       run_once: true
-  
+
   tasks:
-  - name: Print version
-    debug:
-      var: ansible_version.full
-
-  - name: Dump all current variables
-    debug:
-      var: vars
-
   - name: Get VM inventory
     community.proxmox.proxmox_vm_info:
       api_user: "{{ api_user }}"
