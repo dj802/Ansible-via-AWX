@@ -1,0 +1,26 @@
+- name: Set up daily backup schedule on Proxmox VE
+  hosts: hosts
+  connection: local
+  gather_facts: false
+  vars:
+    api_host: "{{ proxmox_host }}"
+    api_user: "{{ proxmox_user }}"
+    api_token_id: "{{ proxmox_token_id }}"
+    api_token_secret: "{{ lookup('env', 'proxmox_token_secret') }}"
+
+  tasks:
+  - name: Set up daily backup schedule
+    community.proxmox.proxmox_backup_schedule:
+      api_user: "{{ api_user }}"
+      api_host: "{{ api_host }}"
+      api_token_id: "{{ api_token_id }}"
+      api_token_secret: "{{ api_token_secret }}"
+      validate_certs: false
+      state: present
+      schedule: "*-*-* 02:00:00"
+      backup_type: "vzdump"
+      store: "pbs01" # Replace with your PBS or local datastore name
+      compress: "lzf"
+      mode: "snapshot"
+      all: true
+      keep_daily: 7
