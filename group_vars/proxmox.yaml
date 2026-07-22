@@ -1,3 +1,4 @@
+# Proxmox API Connection (For community.proxmox modules)
 proxmox_api_host: "{{ vault_proxmox_api_host }}"
 proxmox_api_user: "{{ vault_proxmox_api_user }}"
 proxmox_api_token_id: "{{ vault_proxmox_api_token_id }}"
