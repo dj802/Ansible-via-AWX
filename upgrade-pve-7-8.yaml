@@ -1,0 +1,7 @@
+---
+- hosts: all
+  gather_facts: true
+  tasks:
+    - name: Print the OS distribution
+      ansible.builtin.debug:
+        msg: "Target system is {{ ansible_facts['distribution'] }} version {{ ansible_facts['distribution_version'] }}"
