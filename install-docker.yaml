@@ -1,0 +1,80 @@
+---
+- name: Install Docker on Debian
+  hosts: docker
+  become: true
+  vars:
+    docker_gpg_key_url: https://download.docker.com/linux/debian/gpg
+
+  tasks:
+
+    - name: Remove old Docker and conflicting packages
+      apt:
+        name:
+          - docker.io
+          - docker-doc
+          - docker-compose
+          - podman-docker
+          - containerd
+          - runc
+        state: absent
+        purge: yes
+
+    - name: Get Debian VERSION_CODENAME
+      command: bash -c '. /etc/os-release && echo $VERSION_CODENAME'
+      register: os_codename_raw
+
+    - name: Strip newline from codename
+      set_fact:
+        os_codename: "{{ os_codename_raw.stdout | trim }}"
+
+    - name: Ensure keyrings directory exists
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Download Docker GPG key using curl
+      command: >
+        curl -fsSL {{ docker_gpg_key_url }} -o /etc/apt/keyrings/docker.asc
+      args:
+        creates: /etc/apt/keyrings/docker.asc
+
+    - name: Ensure Docker key permissions
+      file:
+        path: /etc/apt/keyrings/docker.asc
+        mode: '0644'
+
+    - name: Add the repository to Apt sources
+      ansible.builtin.copy:
+        dest: /etc/apt/sources.list.d/docker.sources
+        force: yes
+        content: |
+          Types: deb
+          URIs: https://download.docker.com/linux/debian
+          Suites: {{ os_codename }}
+          Components: stable
+          Signed-By: /etc/apt/keyrings/docker.asc
+
+    - name: Update and upgrade apt packages
+      become: true
+      ansible.builtin.apt:
+        update_cache: yes
+        upgrade: yes
+
+
+    - name: Install Docker Engine packages
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+        update_cache: yes
+
+    - name: Enable and start Docker
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
