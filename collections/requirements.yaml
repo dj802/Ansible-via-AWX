@@ -1,5 +1,0 @@
-# collections/requirements.yaml
-collections:
-  - name: community.general
-  - name: community.proxmox
-  

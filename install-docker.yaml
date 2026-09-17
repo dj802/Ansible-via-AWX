@@ -3,7 +3,7 @@
   hosts: docker
   become: true
   vars:
-    docker_gpg_key_url: https://download.docker.com/linux/debian/gpg
+    docker_gpg_key_url: https://download.docker.com/linux/ubuntu/gpg
 
   tasks:
 
@@ -50,7 +50,7 @@
         force: yes
         content: |
           Types: deb
-          URIs: https://download.docker.com/linux/debian
+          URIs: https://download.docker.com/linux/ubuntu
           Suites: {{ os_codename }}
           Components: stable
           Signed-By: /etc/apt/keyrings/docker.asc
